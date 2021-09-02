@@ -26,4 +26,4 @@
 * First Topic Image Rotator can be installed on either SMF 2.0.x or SMF 2.1 with the same package.
 
 ## How to install
-* You can install Team Page through the package manager of your forum administration.
+* You can install First Topic Image Rotator through the package manager of your forum administration.
