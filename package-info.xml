@@ -16,6 +16,8 @@
 		<require-dir name="Themes" destination="$boarddir">Theme files</require-dir>
 		<!-- Hooks -->
 		<code>hooks/2.0_add.php</code>
+		<!-- Redirect -->
+		<redirect url="?action=admin;area=modsettings;sa=firsttopicimage">redirect.txt</redirect>
 	</install>
 	<!-- SMF 2.1.x -->
 	<install for="2.1 - 2.1.99, 2.1 RC4">
@@ -33,6 +35,8 @@
 		<hook hook="integrate_modify_modifications" function="FirstTopicImage::subaction" file="$sourcedir/FirstTopicImage.php" />
 		<hook hook="integrate_admin_areas" function="FirstTopicImage::admin_area" file="$sourcedir/FirstTopicImage.php" />
 		<hook hook="integrate_load_theme" function="FirstTopicImage::block" file="$sourcedir/FirstTopicImage.php" />
+		<!-- Redirect -->
+		<redirect url="?action=admin;area=modsettings;sa=firsttopicimage">redirect.txt</redirect>
 	</install>
 
 	<!-- Uninstall -->
