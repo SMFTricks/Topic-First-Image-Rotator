@@ -111,3 +111,12 @@
 	outline: none;
 	border: inherit;
 }
+div.resize_image > a > img { 
+	display: flex;
+	align-content: center;
+	align-self: center;
+	align-items: center;
+	justify-content: center;
+	justify-items: center;
+	justify-self: center;
+}
