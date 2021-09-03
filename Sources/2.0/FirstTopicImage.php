@@ -11,6 +11,11 @@
 if (!defined('SMF'))
 	die('No direct access...');
 
+function settings()
+{
+	FirstTopicImage::settings();
+}
+
 class FirstTopicImage
 {
 	/**
@@ -36,7 +41,7 @@ class FirstTopicImage
 
 	public static function subaction(&$subActions)
 	{
-		$subActions['firsttopicimage'] = 'FirstTopicImage::settings';
+		$subActions['firsttopicimage'] = 'settings';
 	}
 
 	public static function admin_area(&$admin_areas)
@@ -64,6 +69,7 @@ class FirstTopicImage
 		$config_vars = [
 			['check', 'firsttopicimage_enable_everywhere' , 'subtext' => $txt['firsttopicimage_enable_everywhere_desc']],
 			['text', 'firstopicimage_selectboards', 'subtext' => 'On SMF 2.0.x, separate your boards with commas, no spaces!'],
+			['check', 'firsttopicimage_board_only' , 'subtext' => $txt['firsttopicimage_board_only_desc']],
 			['int', 'firstopicimage_limit', 'subtext' => $txt['firstopicimage_limit_desc']],
 			'',
 			['int', 'firstopicimage_width'],
@@ -109,11 +115,30 @@ class FirstTopicImage
 		global $board, $topic, $modSettings, $context, $smcFunc, $txt, $user_info, $scripturl, $settings;
 
 		// Should we load in the current section?
-		if ((empty($modSettings['firsttopicimage_enable_everywhere']) && empty($board) && empty($topic) && !empty($context['current_action'])) || empty($modSettings['firstopicimage_selectboards']))
+		if ((empty($modSettings['firsttopicimage_enable_everywhere']) && empty($board) && !empty($context['current_action'])) || empty($modSettings['firstopicimage_selectboards']) || !empty($topic))
 			return;
 		// Load the images
 		else
 		{
+			// Set the boards
+			self::$_boards = !empty($modSettings['firstopicimage_selectboards']) ? explode(',', $modSettings['firstopicimage_selectboards']) : [0];
+
+			// Make sure boards are int...
+			if (!empty(self::$_boards))
+				foreach (self::$_boards as $set_board => $id)
+					self::$_boards[$set_board] = (int) $id;
+
+			// Don't show slider on this board if it's not in the set
+			if (!empty($board))
+			{
+				if (!in_array($board, self::$_boards))
+					return false;
+
+				// Only show images from this board?
+				if (!empty($modSettings['firsttopicimage_board_only']))
+					self::$_boards = [$board];
+			}
+			
 			// Load the CSS
 			$context['html_headers'] .= '
 			<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
@@ -187,14 +212,6 @@ class FirstTopicImage
 					});
 				});
 			</script>';
-
-			// Set the boards
-			self::$_boards = explode(',', $modSettings['firstopicimage_selectboards']);
-			self::$_images = [];
-
-			// Make sure boards are int...
-			foreach (self::$_boards as $board => $id)
-				self::$_boards[$board] = (int) $id;
 
 			$request =  $smcFunc['db_query']('', '
 				SELECT t.id_topic, t.id_board, t.id_first_msg, t.id_member_started, t.approved,
