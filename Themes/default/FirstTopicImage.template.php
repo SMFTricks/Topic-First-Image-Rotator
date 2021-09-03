@@ -21,14 +21,14 @@ function template_firsttopicimage_above()
 		foreach ($context['block_images'] as $image)
 		{
 			echo '
-			<div class="resize_image">
-				<a href="', $image['topic']['link'], '">
-					<img src="', $image['image']['src'], '">
-				</a>
-				<span class="author">
-					', $txt['by'] , ' ', $image['author']['name'], '
-				</span>
-			</div>';
+				<div class="resize_image">
+					<a href="', $image['topic']['link'], '">
+						<img src="', $image['image']['src'], '">
+					</a>
+					<span class="author">
+						', $txt['by'] , ' ', $image['author']['name'], '
+					</span>
+				</div>';
 		}
 		echo '
 			</div>';
