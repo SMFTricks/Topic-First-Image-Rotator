@@ -62,7 +62,7 @@ class FirstTopicImage
 
 		// The actual settings
 		$config_vars = [
-			['check', 'firsttopicimage_enable_everywhere' , 'subtext' => $txt['firsttopicimage_enable_everywhere_desc']],
+			['check', 'firsttopicimage_enable_index' , 'subtext' => $txt['firsttopicimage_enable_index_desc']],
 			['boards', 'firstopicimage_selectboards'],
 			['check', 'firsttopicimage_board_only' , 'subtext' => $txt['firsttopicimage_board_only_desc']],
 			['int', 'firstopicimage_limit', 'subtext' => $txt['firstopicimage_limit_desc']],
@@ -73,6 +73,7 @@ class FirstTopicImage
 			['int', 'firstopicimage_slides_toshow', 'subtext' => $txt['firstopicimage_slides_toshow_desc']],
 			['int', 'firstopicimage_slides_toscroll', 'subtext' => $txt['firstopicimage_slides_toscroll_desc']],
 			'',
+			['check', 'firstopicimage_centermode'],
 			['check', 'firstopicimage_slides_autoplay'],
 			['int', 'firstopicimage_slides_speed', 'subtext' => $txt['firstopicimage_slides_speed_desc']],
 		];
@@ -98,8 +99,8 @@ class FirstTopicImage
 		loadTemplate('FirstTopicImage');
 
 		// Load the layer
-		$before = array_slice($context['template_layers'], 0, 2);
-		$after = array_slice($context['template_layers'], 2);
+		$before = array_slice($context['template_layers'], 0, 3);
+		$after = array_slice($context['template_layers'], 3);
 		$context['template_layers'] = array_merge($before, ['firsttopicimage'], $after);
 
 		$context['block_images'] = self::loadImages();
@@ -110,7 +111,7 @@ class FirstTopicImage
 		global $board, $topic, $modSettings, $context, $smcFunc, $txt, $user_info, $scripturl;
 
 		// Should we load in the current section?
-		if ((empty($modSettings['firsttopicimage_enable_everywhere']) && empty($board) && !empty($context['current_action'])) || empty($modSettings['firstopicimage_selectboards']) || !empty($topic))
+		if (((!empty($modSettings['firsttopicimage_enable_index']) && !empty($context['current_action'])) || !empty($topic)) || ((empty($board) || !empty($topic)) && empty($modSettings['firsttopicimage_enable_index'])))
 			return;
 		// Load the images
 		else
@@ -143,7 +144,12 @@ class FirstTopicImage
 				{' . 
 					(!empty($modSettings['firstopicimage_width']) ? ('width: ' . $modSettings['firstopicimage_width'] . 'px;') : '' ) . 
 					(!empty($modSettings['firstopicimage_height']) ? ('height: ' . $modSettings['firstopicimage_height'] . 'px;') : '' ) . 
-				'}'
+				'}' . (empty($modSettings['firstopicimage_centermode']) ? '' : '
+				div.resize_image:not(.slick-center) > a>  img
+				{
+					width: 80px !important;
+					height: 100px !important;
+				}')
 			);
 			// Load the JS
 			loadJavaScriptFile('//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js', ['external' => true]);
@@ -152,9 +158,10 @@ class FirstTopicImage
 					$(\'.firstopicimage-slick\').slick({
 						dots: false,
 						infinite: true,
+						centerMode: ' . (empty($modSettings['firstopicimage_centermode']) ? 'false' : 'true') . ',
 						autoplay: ' . (empty($modSettings['firstopicimage_slides_autoplay']) ? 'false' : 'true') . ',
 						autoplaySpeed: ' . (empty($modSettings['firstopicimage_slides_speed']) ? '1500' : $modSettings['firstopicimage_slides_speed']) . ',
-						slidesToShow: ' . (empty($modSettings['firstopicimage_slides_toshow']) ? '4' : $modSettings['firstopicimage_slides_toshow']) . ',
+						slidesToShow: ' . (empty($modSettings['firstopicimage_slides_toshow']) ? '5' : $modSettings['firstopicimage_slides_toshow']) . ',
 						slidesToScroll: ' . (empty($modSettings['firstopicimage_slides_toscroll']) ? '1' : $modSettings['firstopicimage_slides_toscroll']) . ',
 
 						responsive: [
