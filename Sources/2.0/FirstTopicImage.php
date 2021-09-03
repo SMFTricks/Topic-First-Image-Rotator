@@ -192,6 +192,10 @@ class FirstTopicImage
 			self::$_boards = explode(',', $modSettings['firstopicimage_selectboards']);
 			self::$_images = [];
 
+			// Make sure boards are int...
+			foreach (self::$_boards as $board => $id)
+				self::$_boards[$board] = (int) $id;
+
 			$request =  $smcFunc['db_query']('', '
 				SELECT t.id_topic, t.id_board, t.id_first_msg, t.id_member_started, t.approved,
 					m.subject, m.body, m.poster_time,
