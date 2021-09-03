@@ -14,6 +14,7 @@
 ## Features
 - Enable on every page (default is index, boards and topic view)
 - Select the boards included
+- Select if you only want to display images from the current board
 - Set a limit of images
   - Height
   - Width

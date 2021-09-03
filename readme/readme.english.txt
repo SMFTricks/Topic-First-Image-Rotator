@@ -13,6 +13,7 @@
 [list]
 [li][size=9pt]Enable on every page (default is index, boards and topic view)[/size][/li]
 [li][size=9pt]Select the boards included[/size][/li]
+[li][size=9pt]Select if you only want to display images from the current board[/size][/li]
 [li][size=9pt]Set a limit of images[/size]
 [list]
 [li][size=8pt]Height[/size][/li]
