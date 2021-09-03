@@ -9,7 +9,7 @@
  */
 
 $txt['firsttopicimage'] = 'First Topic Image';
-$txt['firsttopicimage_enable_index'] = 'Enable the images on every forum page';
+$txt['firsttopicimage_enable_index'] = 'Enable the images on forum index';
 $txt['firsttopicimage_enable_index_desc'] = 'By default it only appears in the message index (the list of topics).';
 $txt['firstopicimage_selectboards'] = 'Select the boards to fetch images from';
 $txt['firstopicimage_selectboards_desc'] = 'On SMF 2.0.x, separate your boards with commas, no spaces!';
