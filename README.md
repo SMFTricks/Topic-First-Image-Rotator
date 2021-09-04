@@ -9,10 +9,11 @@
 * Developed by [Diego Andrés](https://github.com/DiegoAndresCortes)
 
 ## Introduction
-* First Topic Image Rotator allows you to add a slider to your forum with the latest first image of each topic.
+* First Topic Image Rotator allows you to add a slider (carousel) to your forum with the latest first image of each topic from the selected boards.
 
 ## Features
-- Enable on every page (default is index, boards and topic view)
+- Enable on forum index (default is topic list only)
+- Include inserted attachments in posts (SMF 2.1.x)
 - Select the boards included
 - Select if you only want to display images from the current board
 - Set a limit of images
@@ -20,6 +21,7 @@
   - Width
 - Amount of images per slide
 - Amount of images to scroll
+- Center Mode
 - Autoplay
   - Speed
 

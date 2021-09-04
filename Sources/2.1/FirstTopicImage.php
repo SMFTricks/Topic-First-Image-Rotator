@@ -32,7 +32,24 @@ class FirstTopicImage
 	 * 
 	 * @var string
 	 */
-	public static $_pattern = '/(\[img.*?\])(.+?)\[\/img\]/';
+	public static $_img_pattern = '/(\[img.*?\])(.+?)\[\/img\]/';
+
+	/**
+	 * The extension for attached iamges
+	 * 
+	 * @var array
+	 */
+	public static $_attach_extensions = [
+		'png',
+		'jpg',
+	];
+
+	/**
+	 * The url for the attachments
+	 * 
+	 * @var string
+	 */
+	public static $_attach_url = '?action=dlattach;topic=';
 
 	public static function subaction(&$subActions)
 	{
@@ -63,6 +80,7 @@ class FirstTopicImage
 		// The actual settings
 		$config_vars = [
 			['check', 'firsttopicimage_enable_index' , 'subtext' => $txt['firsttopicimage_enable_index_desc']],
+			['check', 'firstopicimage_include_attachments'],
 			['boards', 'firstopicimage_selectboards'],
 			['check', 'firsttopicimage_board_only' , 'subtext' => $txt['firsttopicimage_board_only_desc']],
 			['int', 'firstopicimage_limit', 'subtext' => $txt['firstopicimage_limit_desc']],
@@ -197,19 +215,23 @@ class FirstTopicImage
 				SELECT t.id_topic, t.id_board, t.id_first_msg, t.id_member_started, t.approved,
 					m.subject, m.body, m.poster_time,
 					mem.id_member, mem.real_name,
-					b.name
+					b.name'. (!empty($modSettings['firstopicimage_include_attachments']) ? ',
+					MIN(a.id_attach) AS id_attach, MAX(a.fileext) AS fileext' : '') . '
 				FROM {db_prefix}topics AS t
 					LEFT JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
 					LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = t.id_member_started)
-					LEFT JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
-				WHERE t.id_board IN ({array_int:boards}) AND m.body LIKE "%[img%" AND {query_see_board}' . (!$modSettings['postmod_active'] || allowedTo('approve_posts') ? '' : '
-				AND (t.approved = 1 OR (t.id_member_started != 0 AND t.id_member_started = {int:current_member}))') . '
+					LEFT JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)'. (!empty($modSettings['firstopicimage_include_attachments']) ? '
+					LEFT JOIN  {db_prefix}attachments AS a ON (a.id_msg = t.id_first_msg)' : '') . '
+				WHERE t.id_board IN ({array_int:boards}) AND (m.body LIKE "%[img%"'. (!empty($modSettings['firstopicimage_include_attachments']) ? ' OR (m.body LIKE "%[attach%") AND fileext IN ({array_string:extensions})': '') . ') AND {query_see_board}' . (!$modSettings['postmod_active'] || allowedTo('approve_posts') ? '' : '
+				AND (t.approved = 1 OR (t.id_member_started != 0 AND t.id_member_started = {int:current_member}))') . (!empty($modSettings['firstopicimage_include_attachments']) ? '
+				GROUP BY t.id_topic, t.id_board, t.id_first_msg, t.id_member_started, t.approved, m.subject, m.body, m.poster_time, mem.id_member, mem.real_name, b.name' : '') . '
 				ORDER BY t.id_topic DESC
 				LIMIT {int:limit}',
 				[
 					'boards' => self::$_boards,
 					'limit' => empty($modSettings['firstopicimage_limit']) ? 10 : $modSettings['firstopicimage_limit'],
 					'current_member' => $user_info['id'],
+					'extensions' => self::$_attach_extensions, 
 				]
 			);
 
@@ -217,7 +239,12 @@ class FirstTopicImage
 			while($row = $smcFunc['db_fetch_assoc']($request))
 			{
 				// Get the image urls
-				preg_match(self::$_pattern, $row['body'], $matches);
+				if (empty($row['id_attach']))
+					preg_match(self::$_img_pattern, $row['body'], $img_url);
+				else
+				{
+					$img_url[2] = $scripturl . self::$_attach_url . $row['id_topic'] . '.0;attach=' . $row['id_attach'];
+				}
 				
 				self::$_images[] = [
 					'author' => [
@@ -237,8 +264,8 @@ class FirstTopicImage
 						'link' => '<a href="' . $scripturl . '?board=' . $row['id_board'] . '.0">' . $row['name'] . '</a>',
 					],
 					'image' => [
-						'src' => $matches[2],
-						'img' => '<img src="' . $matches[2] . '" alt="' . $row['subject'] . '"/>',
+						'src' => $img_url[2],
+						'img' => '<img src="' . $img_url[2] . '" alt="' . $row['subject'] . '"/>',
 					]
 				];
 			}

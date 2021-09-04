@@ -15,6 +15,7 @@ $txt['firstopicimage_selectboards'] = 'Select the boards to fetch images from';
 $txt['firstopicimage_selectboards_desc'] = 'On SMF 2.0.x, separate your boards with commas, no spaces!';
 $txt['firsttopicimage_board_only'] = 'Display only images from the active board';
 $txt['firsttopicimage_board_only_desc'] = 'When the user is in ?board, it will display only images from topics in that board. Only if the board is in the selection.';
+$txt['firstopicimage_include_attachments'] = 'Include attached images inserted in topics';
 $txt['firstopicimage_limit'] = 'Limit of images to display';
 $txt['firstopicimage_limit_desc'] = 'Default is 10';
 $txt['firstopicimage_width'] = 'Width of the images';

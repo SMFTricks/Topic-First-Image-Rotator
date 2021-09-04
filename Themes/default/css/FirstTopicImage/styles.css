@@ -111,12 +111,14 @@
 	outline: none;
 	border: inherit;
 }
+/* Some slick center sexy things */
+.slick-track {
+	display: flex;
+}
+.slick-slide {
+	align-self: center;
+}
 div.resize_image > a > img { 
 	display: flex;
-	align-content: center;
-	align-self: center;
 	align-items: center;
-	justify-content: center;
-	justify-items: center;
-	justify-self: center;
 }

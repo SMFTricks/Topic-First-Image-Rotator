@@ -7,11 +7,12 @@
 [size=8pt]Developed by: [url=https://smftricks.com/index.php?action=profile;u=1]Diego Andrés[/url]
 
 [size=12pt][color=navy]Introduction[/color][/size]
-[size=8pt]First Topic Image Rotator allows you to add a slider to your forum with the latest first image of each topic.[/size]
+[size=8pt]First Topic Image Rotator allows you to add a slider (carousel) to your forum with the latest first image of each topic from the selected boards.[/size]
 
 [size=12pt][color=teal]Features[/color][/size]
 [list]
 [li][size=9pt]Enable on every page (default is index, boards and topic view)[/size][/li]
+[li][size=9pt]Include inserted attachments in posts (SMF 2.1.x)[/size][/li]
 [li][size=9pt]Select the boards included[/size][/li]
 [li][size=9pt]Select if you only want to display images from the current board[/size][/li]
 [li][size=9pt]Set a limit of images[/size]
@@ -22,6 +23,7 @@
 [/li]
 [li][size=9pt]Amount of images per slide[/size][/li]
 [li][size=9pt]Amount of images to scroll[/size][/li]
+[li][size=9pt]Center Mode[/size][/li]
 [li][size=9pt]Autoplay[/size]
 [list]
 [li][size=8pt]Speed[/size][/li]
