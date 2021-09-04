@@ -216,15 +216,15 @@ class FirstTopicImage
 					m.subject, m.body, m.poster_time,
 					mem.id_member, mem.real_name,
 					b.name'. (!empty($modSettings['firstopicimage_include_attachments']) ? ',
-					MIN(a.id_attach) AS id_attach, MAX(a.fileext) AS fileext' : '') . '
+					MIN(a.id_attach) AS id_attach, MAX(a.fileext) AS fileext, a.approved, a.id_thumb' : '') . '
 				FROM {db_prefix}topics AS t
 					LEFT JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
 					LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = t.id_member_started)
 					LEFT JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)'. (!empty($modSettings['firstopicimage_include_attachments']) ? '
 					LEFT JOIN  {db_prefix}attachments AS a ON (a.id_msg = t.id_first_msg)' : '') . '
-				WHERE t.id_board IN ({array_int:boards}) AND (m.body LIKE "%[img%"'. (!empty($modSettings['firstopicimage_include_attachments']) ? ' OR (m.body LIKE "%[attach%") AND fileext IN ({array_string:extensions})': '') . ') AND {query_see_board}' . (!$modSettings['postmod_active'] || allowedTo('approve_posts') ? '' : '
+				WHERE t.id_board IN ({array_int:boards}) AND (m.body LIKE "%[img%"'. (!empty($modSettings['firstopicimage_include_attachments']) ? ' OR (m.body LIKE "%[attach%") AND a.id_thumb != 0 AND a.approved = 1 AND fileext IN ({array_string:extensions})': '') . ') AND {query_see_board}' . (!$modSettings['postmod_active'] || allowedTo('approve_posts') ? '' : '
 				AND (t.approved = 1 OR (t.id_member_started != 0 AND t.id_member_started = {int:current_member}))') . (!empty($modSettings['firstopicimage_include_attachments']) ? '
-				GROUP BY t.id_topic, t.id_board, t.id_first_msg, t.id_member_started, t.approved, m.subject, m.body, m.poster_time, mem.id_member, mem.real_name, b.name' : '') . '
+				GROUP BY t.id_topic, t.id_board, t.id_first_msg, t.id_member_started, t.approved, m.subject, m.body, m.poster_time, mem.id_member, mem.real_name, b.name, a.approved, a.id_thumb' : '') . '
 				ORDER BY t.id_topic DESC
 				LIMIT {int:limit}',
 				[
