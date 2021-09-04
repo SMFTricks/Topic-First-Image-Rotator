@@ -36,3 +36,6 @@
 [hr]
 
 [size=12pt][color=purple][url=https://github.com/SMFTricks/Topic-First-Image-Rotator]GitHub[/url][/color][/size]
+
+[size=12pt][color=orange]Credits[/color][/size]
+[size=8pt]Slick Carousel: Thanks to [url=https://github.com/kenwheeler/slick]kenwheeler[/url]. Licensed under [i]MIT[/i][/size]

@@ -30,3 +30,6 @@
 
 ## How to install
 * You can install First Topic Image Rotator through the package manager of your forum administration.
+
+## Carousel
+* Using [slick](https://github.com/kenwheeler/slick), licensed under MIT.
