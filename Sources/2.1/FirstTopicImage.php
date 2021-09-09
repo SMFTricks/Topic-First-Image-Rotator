@@ -15,28 +15,28 @@ class FirstTopicImage
 {
 	/**
 	 * Contains the images for the slider
-	 * 
+	 *
 	 * @var array
 	 */
 	public static $_images = [];
 
 	/**
 	 * Contains the boards for the messages
-	 * 
+	 *
 	 * @var array
 	 */
 	public static $_boards = [];
 
 	/**
 	 * The pattern for the images
-	 * 
+	 *
 	 * @var string
 	 */
 	public static $_img_pattern = '/(\[img.*?\])(.+?)\[\/img\]/';
 
 	/**
 	 * The extension for attached iamges
-	 * 
+	 *
 	 * @var array
 	 */
 	public static $_attach_extensions = [
@@ -46,7 +46,7 @@ class FirstTopicImage
 
 	/**
 	 * The url for the attachments
-	 * 
+	 *
 	 * @var string
 	 */
 	public static $_attach_url = '?action=dlattach;topic=';
@@ -58,20 +58,19 @@ class FirstTopicImage
 
 	public static function admin_area(&$admin_areas)
 	{
-			global $txt;
+		global $txt;
 
-			// Load the language file
-			loadLanguage('FirstTopicImage/');
+		// Load the language file
+		loadLanguage('FirstTopicImage/');
 
-			// Add the new setting area
-			$admin_areas['config']['areas']['modsettings']['subsections']['firsttopicimage'] = [$txt['firsttopicimage']];
+		// Add the new setting area
+		$admin_areas['config']['areas']['modsettings']['subsections']['firsttopicimage'] = [$txt['firsttopicimage']];
 	}
 
 	public static function settings($return_config = false)
 	{
-		global $context, $sourcedir, $txt, $scripturl;
+		global $context, $txt, $scripturl;
 
-		require_once($sourcedir . '/ManageServer.php');
 		$context['post_url'] = $scripturl . '?action=admin;area=modsettings;sa=firsttopicimage;save';
 		$context['sub_template'] = 'show_settings';
 		$context['settings_title'] = $txt['firsttopicimage'];
@@ -104,8 +103,10 @@ class FirstTopicImage
 		if (isset($_GET['save'])) {
 			checkSession();
 			saveDBSettings($config_vars);
+			clean_cache();
 			redirectexit('action=admin;area=modsettings;sa=firsttopicimage');
 		}
+
 		prepareDBSettingContext($config_vars);
 	}
 
@@ -130,88 +131,89 @@ class FirstTopicImage
 
 		// Should we load in the current section?
 		if (((!empty($modSettings['firsttopicimage_enable_index']) && !empty($context['current_action'])) || !empty($topic)) || ((empty($board) || !empty($topic)) && empty($modSettings['firsttopicimage_enable_index'])))
-			return;
+			return [];
+
 		// Load the images
-		else
+		// Set the boards
+		self::$_boards = !empty($modSettings['firstopicimage_selectboards']) ? explode(',', $modSettings['firstopicimage_selectboards']) : [0];
+
+		// Make sure boards are int...
+		if (!empty(self::$_boards))
+			foreach (self::$_boards as $set_board => $id)
+				self::$_boards[$set_board] = (int) $id;
+
+		// Don't show slider on this board if it's not in the set
+		if (!empty($board))
 		{
-			// Set the boards
-			self::$_boards = !empty($modSettings['firstopicimage_selectboards']) ? explode(',', $modSettings['firstopicimage_selectboards']) : [0];
+			if (!in_array($board, self::$_boards))
+				return false;
 
-			// Make sure boards are int...
-			if (!empty(self::$_boards))
-				foreach (self::$_boards as $set_board => $id)
-					self::$_boards[$set_board] = (int) $id;
+			// Only show images from this board?
+			if (!empty($modSettings['firsttopicimage_board_only']))
+				self::$_boards = [$board];
+		}
 
-			// Don't show slider on this board if it's not in the set
-			if (!empty($board))
+		// Load the CSS
+		loadCSSFile('//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.css', ['external' => true]);
+		loadCSSFile('FirstTopicImage/styles.css', ['default_theme' => true], 'firsttopicimage_styles');
+		// Change width/height
+		addInlineCss(
+			'.firstopicimage-slick div.resize_image > a > img
+			{' .
+				(!empty($modSettings['firstopicimage_width']) ? ('width: ' . $modSettings['firstopicimage_width'] . 'px;') : '' ) .
+				(!empty($modSettings['firstopicimage_height']) ? ('height: ' . $modSettings['firstopicimage_height'] . 'px;') : '' ) .
+			'}' . (empty($modSettings['firstopicimage_centermode']) ? '' : '
+			div.resize_image:not(.slick-center) > a>  img
 			{
-				if (!in_array($board, self::$_boards))
-					return false;
+				width: 80px !important;
+				height: 100px !important;
+			}')
+		);
+		// Load the JS
+		loadJavaScriptFile('//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js', ['external' => true]);
+		addInlineJavaScript('
+			$(document).ready(function(){
+				$(\'.firstopicimage-slick\').slick({
+					dots: false,
+					infinite: true,
+					centerMode: ' . (empty($modSettings['firstopicimage_centermode']) ? 'false' : 'true') . ',
+					autoplay: ' . (empty($modSettings['firstopicimage_slides_autoplay']) ? 'false' : 'true') . ',
+					autoplaySpeed: ' . (empty($modSettings['firstopicimage_slides_speed']) ? '1500' : $modSettings['firstopicimage_slides_speed']) . ',
+					slidesToShow: ' . (empty($modSettings['firstopicimage_slides_toshow']) ? '5' : $modSettings['firstopicimage_slides_toshow']) . ',
+					slidesToScroll: ' . (empty($modSettings['firstopicimage_slides_toscroll']) ? '1' : $modSettings['firstopicimage_slides_toscroll']) . ',
 
-				// Only show images from this board?
-				if (!empty($modSettings['firsttopicimage_board_only']))
-					self::$_boards = [$board];
-			}
-
-			// Load the CSS
-			loadCSSFile('//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css', ['external' => true]);
-			loadCSSFile('FirstTopicImage/styles.css', ['default_theme' => true], 'firsttopicimage_styles');
-			// Change width/height
-			addInlineCss(
-				'.firstopicimage-slick div.resize_image > a > img
-				{' . 
-					(!empty($modSettings['firstopicimage_width']) ? ('width: ' . $modSettings['firstopicimage_width'] . 'px;') : '' ) . 
-					(!empty($modSettings['firstopicimage_height']) ? ('height: ' . $modSettings['firstopicimage_height'] . 'px;') : '' ) . 
-				'}' . (empty($modSettings['firstopicimage_centermode']) ? '' : '
-				div.resize_image:not(.slick-center) > a>  img
-				{
-					width: 80px !important;
-					height: 100px !important;
-				}')
-			);
-			// Load the JS
-			loadJavaScriptFile('//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js', ['external' => true]);
-			addInlineJavaScript('
-				$(document).ready(function(){
-					$(\'.firstopicimage-slick\').slick({
-						dots: false,
-						infinite: true,
-						centerMode: ' . (empty($modSettings['firstopicimage_centermode']) ? 'false' : 'true') . ',
-						autoplay: ' . (empty($modSettings['firstopicimage_slides_autoplay']) ? 'false' : 'true') . ',
-						autoplaySpeed: ' . (empty($modSettings['firstopicimage_slides_speed']) ? '1500' : $modSettings['firstopicimage_slides_speed']) . ',
-						slidesToShow: ' . (empty($modSettings['firstopicimage_slides_toshow']) ? '5' : $modSettings['firstopicimage_slides_toshow']) . ',
-						slidesToScroll: ' . (empty($modSettings['firstopicimage_slides_toscroll']) ? '1' : $modSettings['firstopicimage_slides_toscroll']) . ',
-
-						responsive: [
-						{
-							breakpoint: 1150,
-							settings: {
-								slidesToShow: 4,
-							}
-						 },
-						{
-							breakpoint: 900,
-							settings: {
-								slidesToShow: 3,
-							}
-						 },
-						{
-							breakpoint: 600,
-							settings: {
-								slidesToShow: 2,
-							}
+					responsive: [
+					{
+						breakpoint: 1150,
+						settings: {
+							slidesToShow: 4,
+						}
 						},
-						{
-							breakpoint: 400,
-							settings: {
-								slidesToShow: 1,
-							}
-						}]
-					});
+					{
+						breakpoint: 900,
+						settings: {
+							slidesToShow: 3,
+						}
+						},
+					{
+						breakpoint: 600,
+						settings: {
+							slidesToShow: 2,
+						}
+					},
+					{
+						breakpoint: 400,
+						settings: {
+							slidesToShow: 1,
+						}
+					}]
 				});
-			');
+			});
+		');
 
-			$request =  $smcFunc['db_query']('', '
+		if ((self::$_images = cache_get_data('first_topic_image_u' . $user_info['id'], 3600)) === null)
+		{
+			$request = $smcFunc['db_query']('', '
 				SELECT t.id_topic, t.id_board, t.id_first_msg, t.id_member_started, t.approved,
 					m.subject, m.body, m.poster_time,
 					mem.id_member, mem.real_name,
@@ -231,21 +233,23 @@ class FirstTopicImage
 					'boards' => self::$_boards,
 					'limit' => empty($modSettings['firstopicimage_limit']) ? 10 : $modSettings['firstopicimage_limit'],
 					'current_member' => $user_info['id'],
-					'extensions' => self::$_attach_extensions, 
+					'extensions' => self::$_attach_extensions,
 				]
 			);
 
 			// Populate the array
-			while($row = $smcFunc['db_fetch_assoc']($request))
+			while ($row = $smcFunc['db_fetch_assoc']($request))
 			{
 				// Get the image urls
 				if (empty($row['id_attach']))
+				{
 					preg_match(self::$_img_pattern, $row['body'], $img_url);
+				}
 				else
 				{
 					$img_url[2] = $scripturl . self::$_attach_url . $row['id_topic'] . '.0;attach=' . $row['id_attach'];
 				}
-				
+
 				self::$_images[] = [
 					'author' => [
 						'id' => $row['id_member_started'],
@@ -259,7 +263,7 @@ class FirstTopicImage
 						'date' => timeformat($row['poster_time']),
 					],
 					'board' => [
-						'id' =>$row['id_board'],
+						'id' => $row['id_board'],
 						'name' => $row['name'],
 						'link' => '<a href="' . $scripturl . '?board=' . $row['id_board'] . '.0">' . $row['name'] . '</a>',
 					],
@@ -269,9 +273,12 @@ class FirstTopicImage
 					]
 				];
 			}
+
 			$smcFunc['db_free_result']($request);
 
-			return self::$_images;
+			cache_put_data('first_topic_image_u' . $user_info['id'], self::$_images, 3600);
 		}
+
+		return self::$_images;
 	}
 }
