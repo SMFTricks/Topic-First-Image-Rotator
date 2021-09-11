@@ -4,7 +4,7 @@
 
 
 [b][size=14pt]First Topic Image Rotator[/size][/b]
-[size=8pt]Developed by: [url=https://smftricks.com/index.php?action=profile;u=1]Diego Andrés[/url]
+[size=8pt]Developed by: [url=https://smftricks.com/index.php?action=profile;u=1]Diego Andrés[/url][/size]
 
 [size=12pt][color=navy]Introduction[/color][/size]
 [size=8pt]First Topic Image Rotator allows you to add a slider (carousel) to your forum with the latest first image of each topic from the selected boards.[/size]
@@ -34,7 +34,6 @@
 [size=12pt][color=maroon]Languages[/color][/size]
 [img]https://www.simplemachines.org/site_images/lang/english.gif[/img]
 [hr]
-
 [size=12pt][color=purple][url=https://github.com/SMFTricks/Topic-First-Image-Rotator]GitHub[/url][/color][/size]
 
 [size=12pt][color=orange]Credits[/color][/size]
