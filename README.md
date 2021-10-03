@@ -31,5 +31,8 @@
 ## How to install
 * You can install First Topic Image Rotator through the package manager of your forum administration.
 
+## Changelog
+You can find the changelog for First Topic Image Rotator on SMF Tricks: [Changelog](https://smftricks.com/index.php?topic=2206.0)
+
 ## Carousel
 * Using [slick](https://github.com/kenwheeler/slick), licensed under MIT.
