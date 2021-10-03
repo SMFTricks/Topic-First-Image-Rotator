@@ -2,7 +2,7 @@
 
 /**
  * @package Firs Topic Image Rotator
- * @version 1.0
+ * @version 1.1
  * @author Diego Andrés <diegoandres_cortes@outlook.com>
  * @copyright Copyright (c) 2021, SMF Tricks
  * @license MIT
@@ -26,6 +26,13 @@ class FirstTopicImage
 	 * @var array
 	 */
 	public static $_boards = [];
+
+	/**
+	 * Check if the user can see attachments
+	 * 
+	 * @var array
+	 */
+	public static $_boards_attachments = [];
 
 	/**
 	 * The pattern for the images
@@ -211,24 +218,39 @@ class FirstTopicImage
 				});
 			');
 
+			// Check if the user can see attachments
+			self::$_boards_attachments = !empty($modSettings['firstopicimage_include_attachments']) ? boardsAllowedTo('view_attachments') : [];
+
+			// Build the query
 			$request =  $smcFunc['db_query']('', '
 				SELECT t.id_topic, t.id_board, t.id_first_msg, t.id_member_started, t.approved,
 					m.subject, m.body, m.poster_time,
 					mem.id_member, mem.real_name,
-					b.name'. (!empty($modSettings['firstopicimage_include_attachments']) ? ',
-					MIN(a.id_attach) AS id_attach, MAX(a.fileext) AS fileext, a.approved, a.id_thumb' : '') . '
+					b.name'. (!empty($modSettings['firstopicimage_include_attachments']) && !empty(self::$_boards_attachments) ? ',
+					MIN(a.id_attach) AS id_attach, MAX(a.fileext) AS fileext, a.approved, a.attachment_type' : '') . '
 				FROM {db_prefix}topics AS t
 					LEFT JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
 					LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = t.id_member_started)
-					LEFT JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)'. (!empty($modSettings['firstopicimage_include_attachments']) ? '
+					LEFT JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)'. (!empty($modSettings['firstopicimage_include_attachments']) && !empty(self::$_boards_attachments) ? '
 					LEFT JOIN  {db_prefix}attachments AS a ON (a.id_msg = t.id_first_msg)' : '') . '
-				WHERE t.id_board IN ({array_int:boards}) AND (m.body LIKE "%[img%"'. (!empty($modSettings['firstopicimage_include_attachments']) ? ' OR (m.body LIKE "%[attach%") AND a.id_thumb != 0 AND a.approved = 1 AND fileext IN ({array_string:extensions})': '') . ') AND {query_see_board}' . (!$modSettings['postmod_active'] || allowedTo('approve_posts') ? '' : '
-				AND (t.approved = 1 OR (t.id_member_started != 0 AND t.id_member_started = {int:current_member}))') . (!empty($modSettings['firstopicimage_include_attachments']) ? '
-				GROUP BY t.id_topic, t.id_board, t.id_first_msg, t.id_member_started, t.approved, m.subject, m.body, m.poster_time, mem.id_member, mem.real_name, b.name, a.approved, a.id_thumb' : '') . '
+				WHERE t.id_board IN ({array_int:boards})
+					AND (m.body LIKE "%[img%"'. (!empty($modSettings['firstopicimage_include_attachments']) && !empty(self::$_boards_attachments) ? ' 
+						OR (m.body LIKE "%[attach%")
+						AND a.attachment_type = {int:attachment_type}
+						AND a.approved = {int:approved}
+						AND fileext IN ({array_string:extensions})'  : '') . ')
+					AND {query_see_board}' . (!empty($modSettings['firstopicimage_include_attachments']) && !empty(self::$_boards_attachments) ? (self::$_boards_attachments == [0] ? '' : '
+					AND t.id_board IN ({array_int:attachment_boards})') : '
+					') . (!$modSettings['postmod_active'] || allowedTo('approve_posts') ? '' : '
+					AND (t.approved = 1 OR (t.id_member_started != 0 AND t.id_member_started = {int:current_member}))') . (!empty($modSettings['firstopicimage_include_attachments']) && !empty(self::$_boards_attachments)? '
+				GROUP BY t.id_topic, t.id_board, t.id_first_msg, t.id_member_started, t.approved, m.subject, m.body, m.poster_time, mem.id_member, mem.real_name, b.name, a.approved, a.attachment_type' : '') . '
 				ORDER BY t.id_topic DESC
 				LIMIT {int:limit}',
 				[
+					'approved' => 1,
+					'attachment_type' => 0,
 					'boards' => self::$_boards,
+					'attachment_boards' => !empty(self::$_boards_attachments ) && is_array(self::$_boards_attachments ) ? self::$_boards_attachments  : [],
 					'limit' => empty($modSettings['firstopicimage_limit']) ? 10 : $modSettings['firstopicimage_limit'],
 					'current_member' => $user_info['id'],
 					'extensions' => self::$_attach_extensions, 
