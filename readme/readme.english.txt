@@ -32,7 +32,7 @@
 [/list]
 
 [size=12pt][color=maroon]Languages[/color][/size]
-[img]https://www.simplemachines.org/site_images/lang/english.gif[/img]
+[img]https://www.simplemachines.org/site_images/lang/english.gif[/img] [img]https://www.simplemachines.org/site_images/lang/spanish.gif[/img] [img]https://www.simplemachines.org/site_images/lang/russian.gif[/img]
 [hr]
 [size=12pt][color=purple][url=https://github.com/SMFTricks/Topic-First-Image-Rotator]GitHub[/url][/color][/size]
 
