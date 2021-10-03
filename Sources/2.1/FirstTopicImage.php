@@ -220,7 +220,6 @@ class FirstTopicImage
 		// Check if the user can see attachments
 		self::$_boards_attachments = !empty($modSettings['firstopicimage_include_attachments']) ? boardsAllowedTo('view_attachments') : [];
 
-
 		if ((self::$_images = cache_get_data('first_topic_image_u' . $user_info['id'], 3600)) === null)
 		{
 			$request =  $smcFunc['db_query']('', '
@@ -243,7 +242,9 @@ class FirstTopicImage
 					AND {query_see_board}' . (!empty($modSettings['firstopicimage_include_attachments']) && !empty(self::$_boards_attachments) ? (self::$_boards_attachments == [0] ? '' : '
 					AND t.id_board IN ({array_int:attachment_boards})') : '
 					') . (!$modSettings['postmod_active'] || allowedTo('approve_posts') ? '' : '
-					AND (t.approved = 1 OR (t.id_member_started != 0 AND t.id_member_started = {int:current_member}))') . (!empty($modSettings['firstopicimage_include_attachments']) && !empty(self::$_boards_attachments)? '
+					AND (t.approved = {int:approved}
+						OR (t.id_member_started != 0
+						AND t.id_member_started = {int:current_member}))') . (!empty($modSettings['firstopicimage_include_attachments']) && !empty(self::$_boards_attachments)? '
 				GROUP BY t.id_topic, t.id_board, t.id_first_msg, t.id_member_started, t.approved, m.subject, m.body, m.poster_time, mem.id_member, mem.real_name, b.name, a.approved, a.attachment_type' : '') . '
 				ORDER BY t.id_topic DESC
 				LIMIT {int:limit}',
