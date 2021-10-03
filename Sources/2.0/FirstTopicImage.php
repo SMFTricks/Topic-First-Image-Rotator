@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @package Firs Topic Image Rotator
- * @version 1.0
+ * @package Topic First Image Rotator
+ * @version 1.2.1
  * @author Diego Andrés <diegoandres_cortes@outlook.com>
  * @copyright Copyright (c) 2021, SMF Tricks
  * @license MIT
@@ -47,20 +47,19 @@ class FirstTopicImage
 
 	public static function admin_area(&$admin_areas)
 	{
-			global $txt;
+		global $txt;
 
-			// Load the language file
-			loadLanguage('FirstTopicImage/');
+		// Load the language file
+		loadLanguage('FirstTopicImage/');
 
-			// Add the new setting area
-			$admin_areas['config']['areas']['modsettings']['subsections']['firsttopicimage'] = [$txt['firsttopicimage']];
+		// Add the new setting area
+		$admin_areas['config']['areas']['modsettings']['subsections']['firsttopicimage'] = [$txt['firsttopicimage']];
 	}
 
 	public static function settings($return_config = false)
 	{
-		global $context, $sourcedir, $txt, $scripturl;
+		global $context, $txt, $scripturl;
 
-		require_once($sourcedir . '/ManageServer.php');
 		$context['post_url'] = $scripturl . '?action=admin;area=modsettings;sa=firsttopicimage;save';
 		$context['sub_template'] = 'show_settings';
 		$context['settings_title'] = $txt['firsttopicimage'];
@@ -92,6 +91,7 @@ class FirstTopicImage
 		if (isset($_GET['save'])) {
 			checkSession();
 			saveDBSettings($config_vars);
+			clean_cache();
 			redirectexit('action=admin;area=modsettings;sa=firsttopicimage');
 		}
 		prepareDBSettingContext($config_vars);
@@ -118,39 +118,43 @@ class FirstTopicImage
 
 		// Should we load in the current section?
 		if (((!empty($modSettings['firsttopicimage_enable_index']) && !empty($context['current_action'])) || !empty($topic)) || ((empty($board) || !empty($topic)) && empty($modSettings['firsttopicimage_enable_index'])))
-			return;
+			return [];
+
 		// Load the images
-		else
+		// Set the boards
+		self::$_boards = !empty($modSettings['firstopicimage_selectboards']) ? explode(',', $modSettings['firstopicimage_selectboards']) : [0];
+
+		// Make sure boards are int...
+		if (!empty(self::$_boards))
+			foreach (self::$_boards as $set_board => $id)
+				self::$_boards[$set_board] = (int) $id;
+
+		// Don't show slider on this board if it's not in the set
+		if (!empty($board))
 		{
-			// Set the boards
-			self::$_boards = !empty($modSettings['firstopicimage_selectboards']) ? explode(',', $modSettings['firstopicimage_selectboards']) : [0];
+			if (!in_array($board, self::$_boards))
+				return false;
 
-			// Make sure boards are int...
-			if (!empty(self::$_boards))
-				foreach (self::$_boards as $set_board => $id)
-					self::$_boards[$set_board] = (int) $id;
+			// Only show images from this board?
+			if (!empty($modSettings['firsttopicimage_board_only']))
+				self::$_boards = [$board];
+		}
 
-			// Don't show slider on this board if it's not in the set
-			if (!empty($board))
-			{
-				if (!in_array($board, self::$_boards))
-					return false;
-
-				// Only show images from this board?
-				if (!empty($modSettings['firsttopicimage_board_only']))
-					self::$_boards = [$board];
-			}
-			
-			// Load the CSS
-			$context['html_headers'] .= '
-			<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+		// Load the CSS
+		$context['html_headers'] .= '
+			<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.css"/>
 			<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/FirstTopicImage/styles.css"/>
 			<style>
 				.firstopicimage-slick div.resize_image > a > img
 				{' . 
 					(!empty($modSettings['firstopicimage_width']) ? ('width: ' . $modSettings['firstopicimage_width'] . 'px;') : '' ) . 
 					(!empty($modSettings['firstopicimage_height']) ? ('height: ' . $modSettings['firstopicimage_height'] . 'px;') : '' ) . 
-				'}
+				'}' . (empty($modSettings['firstopicimage_centermode']) ? '' : '
+				div.resize_image:not(.slick-center) > a>  img
+				{
+					width: 80px !important;
+					height: 100px !important;
+				}') . '
 				.slick-prev, .slick-prev:before,
 				.slick-next, .slick-next:before
 				{
@@ -170,12 +174,7 @@ class FirstTopicImage
 				.slick-next:before
 				{
 					transform: rotate(90deg);
-				}' . (empty($modSettings['firstopicimage_centermode']) ? '' : '
-				div.resize_image:not(.slick-center) > a>  img
-				{
-					width: 80px !important;
-					height: 100px !important;
-				}') . '
+				}
 			</style>';
 			// Load the JS
 			$context['html_headers'] .= '
@@ -221,6 +220,8 @@ class FirstTopicImage
 				});
 			</script>';
 
+		if ((self::$_images = cache_get_data('first_topic_image_u' . $user_info['id'], 3600)) === null)
+		{
 			$request =  $smcFunc['db_query']('', '
 				SELECT t.id_topic, t.id_board, t.id_first_msg, t.id_member_started, t.approved,
 					m.subject, m.body, m.poster_time,
@@ -230,11 +231,16 @@ class FirstTopicImage
 					LEFT JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
 					LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = t.id_member_started)
 					LEFT JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
-				WHERE t.id_board IN ({array_int:boards}) AND m.body LIKE "%[img%" AND {query_see_board}' . (!$modSettings['postmod_active'] || allowedTo('approve_posts') ? '' : '
-				AND (t.approved = 1 OR (t.id_member_started != 0 AND t.id_member_started = {int:current_member}))') . '
+				WHERE t.id_board IN ({array_int:boards})
+					AND m.body LIKE "%[img%"
+					AND {query_see_board}' . (!$modSettings['postmod_active'] || allowedTo('approve_posts') ? '' : '
+					AND (t.approved = {int:approved}
+					OR (t.id_member_started != 0
+						AND t.id_member_started = {int:current_member}))') . '
 				ORDER BY t.id_topic DESC
 				LIMIT {int:limit}',
 				[
+					'approved' => 1,
 					'boards' => self::$_boards,
 					'limit' => empty($modSettings['firstopicimage_limit']) ? 10 : $modSettings['firstopicimage_limit'],
 					'current_member' => $user_info['id'],
@@ -242,11 +248,11 @@ class FirstTopicImage
 			);
 
 			// Populate the array
-			while($row = $smcFunc['db_fetch_assoc']($request))
+			while ($row = $smcFunc['db_fetch_assoc']($request))
 			{
 				// Get the image urls
 				preg_match(self::$_pattern, $row['body'], $matches);
-				
+
 				self::$_images[] = [
 					'author' => [
 						'id' => $row['id_member_started'],
@@ -270,9 +276,12 @@ class FirstTopicImage
 					]
 				];
 			}
+
 			$smcFunc['db_free_result']($request);
 
-			return self::$_images;
+			cache_put_data('first_topic_image_u' . $user_info['id'], self::$_images, 3600);
 		}
+
+		return self::$_images;
 	}
 }

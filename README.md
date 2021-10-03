@@ -2,14 +2,14 @@
     <img src="https://smftricks.com/logos/logo.png">
  </p>
 
-## First Topic Image Rotator
+## Topic First Image Rotator
 <img src="https://img.shields.io/badge/License-MIT-a05a3f?style=flat-square"> <img src="https://img.shields.io/badge/SMF-2.1-3f73a0?style=flat-square">
 <img src="https://img.shields.io/badge/SMF-2.0-996ee1?style=flat-square">
 
 * Developed by [Diego Andrés](https://github.com/DiegoAndresCortes)
 
 ## Introduction
-* First Topic Image Rotator allows you to add a slider (carousel) to your forum with the latest first image of each topic from the selected boards.
+* Topic First Image Rotator allows you to add a slider (carousel) to your forum with the latest first image of each topic from the selected boards.
 
 ## Features
 - Enable on forum index (default is topic list only)
@@ -26,13 +26,13 @@
   - Speed
 
 ## Requirements
-* First Topic Image Rotator can be installed on either SMF 2.0.x or SMF 2.1 with the same package.
+* Topic First Image Rotator can be installed on either SMF 2.0.x or SMF 2.1 with the same package.
 
 ## How to install
-* You can install First Topic Image Rotator through the package manager of your forum administration.
+* You can install Topic First Image Rotator through the package manager of your forum administration.
 
 ## Changelog
-You can find the changelog for First Topic Image Rotator on SMF Tricks: [Changelog](https://smftricks.com/index.php?topic=2206.0)
+You can find the changelog for Topic First Image Rotator on SMF Tricks: [Changelog](https://smftricks.com/index.php?topic=2206.0)
 
 ## Carousel
 * Using [slick](https://github.com/kenwheeler/slick), licensed under MIT.
