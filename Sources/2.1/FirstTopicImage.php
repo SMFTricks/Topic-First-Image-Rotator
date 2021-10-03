@@ -160,7 +160,7 @@ class FirstTopicImage
 		}
 
 		// Load the CSS
-		loadCSSFile('//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css', ['external' => true]);
+		loadCSSFile('//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.css', ['external' => true]);
 		loadCSSFile('FirstTopicImage/styles.css', ['default_theme' => true], 'firsttopicimage_styles');
 		// Change width/height
 		addInlineCss(
