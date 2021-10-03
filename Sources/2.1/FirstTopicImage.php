@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @package Firs Topic Image Rotator
- * @version 1.1
+ * @package Topic First Image Rotator
+ * @version 1.2.1
  * @author Diego Andrés <diegoandres_cortes@outlook.com>
  * @copyright Copyright (c) 2021, SMF Tricks
  * @license MIT

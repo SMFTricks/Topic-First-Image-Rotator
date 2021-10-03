@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package Firs Topic Image Rotator
+ * @package Topic First Image Rotator
  * @version 1.0
  * @author Diego Andrés <diegoandres_cortes@outlook.com>
  * @copyright Copyright (c) 2021, SMF Tricks

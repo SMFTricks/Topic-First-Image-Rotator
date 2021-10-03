@@ -3,11 +3,11 @@
 [img]https://img.shields.io/badge/License-MIT-a05a3f?style=flat-square[/img] [img]https://img.shields.io/badge/SMF-2.1-3f73a0?style=flat-square[/img] [img]https://img.shields.io/badge/SMF-2.0-996ee1?style=flat-square[/img]
 
 
-[b][size=14pt]First Topic Image Rotator[/size][/b]
+[b][size=14pt]Topic First Image Rotator[/size][/b]
 [size=8pt]Developed by: [url=https://smftricks.com/index.php?action=profile;u=1]Diego Andrés[/url][/size]
 
 [size=12pt][color=navy]Introduction[/color][/size]
-[size=8pt]First Topic Image Rotator allows you to add a slider (carousel) to your forum with the latest first image of each topic from the selected boards.[/size]
+[size=8pt]Topic First Image Rotator allows you to add a slider (carousel) to your forum with the latest first image of each topic from the selected boards.[/size]
 
 [size=12pt][color=teal]Features[/color][/size]
 [list]
