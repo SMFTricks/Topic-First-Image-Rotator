@@ -2,7 +2,7 @@
 
 /**
  * @package Topic First Image Rotator
- * @version 1.0
+ * @version 1.2.2
  * @author Diego Andrés <diegoandres_cortes@outlook.com>
  * @copyright Copyright (c) 2021, SMF Tricks
  * @license MIT
@@ -23,7 +23,7 @@ function template_firsttopicimage_above()
 			echo '
 				<div class="resize_image">
 					<a href="', $image['topic']['link'], '">
-						<img src="', $image['image']['src'], '">
+						<img src="', $image['image']['src'], '" alt="', (!empty($image['topic']['title']) ?: '' ), '">
 					</a>
 					<span class="author">
 						', $txt['by'] , ' ', $image['author']['name'], '
