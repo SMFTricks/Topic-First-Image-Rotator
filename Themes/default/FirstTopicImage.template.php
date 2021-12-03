@@ -23,7 +23,7 @@ function template_firsttopicimage_above()
 			echo '
 				<div class="resize_image">
 					<a href="', $image['topic']['link'], '">
-						<img src="', $image['image']['src'], '" alt="', (!empty($image['topic']['title']) ?: '' ), '">
+						<img src="', $image['image']['src'], '" alt="', (!empty($image['topic']['title']) ? $image['topic']['title'] : '' ), '">
 					</a>
 					<span class="author">
 						', $txt['by'] , ' ', $image['author']['name'], '
