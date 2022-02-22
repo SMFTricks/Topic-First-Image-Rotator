@@ -2,7 +2,7 @@
 
 /**
  * @package Topic First Image Rotator
- * @version 1.2.1
+ * @version 1.3
  * @author Diego Andrés <diegoandres_cortes@outlook.com>
  * @copyright Copyright (c) 2021, SMF Tricks
  * @license MIT
@@ -220,7 +220,7 @@ class FirstTopicImage
 		// Check if the user can see attachments
 		self::$_boards_attachments = !empty($modSettings['firstopicimage_include_attachments']) ? boardsAllowedTo('view_attachments') : [];
 
-		if ((self::$_images = cache_get_data('first_topic_image_u' . $user_info['id'], 3600)) === null)
+		if ((self::$_images = cache_get_data('first_topic_image_u' . $user_info['id'] . (!empty($board) ? '_b' . $board : ''), 3600)) === null)
 		{
 			$request =  $smcFunc['db_query']('', '
 				SELECT t.id_topic, t.id_board, t.id_first_msg, t.id_member_started, t.approved,
@@ -262,10 +262,13 @@ class FirstTopicImage
 			// Populate the array
 			while ($row = $smcFunc['db_fetch_assoc']($request))
 			{
-				// Get the image urls
+				// Set the var
+				$img_url  = [];
+				// Get the image url
 				if (empty($row['id_attach']))
 				{
-					preg_match(self::$_img_pattern, $row['body'], $img_url);
+					if (empty(preg_match(self::$_img_pattern, $row['body'], $img_url)))
+						continue;
 				}
 				else
 				{
@@ -298,7 +301,7 @@ class FirstTopicImage
 
 			$smcFunc['db_free_result']($request);
 
-			cache_put_data('first_topic_image_u' . $user_info['id'], self::$_images, 3600);
+			cache_put_data('first_topic_image_u' . $user_info['id'] . (!empty($board) ? '_b' . $board : ''), self::$_images, 3600);
 		}
 
 		return self::$_images;
