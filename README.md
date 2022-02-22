@@ -1,17 +1,14 @@
- <p align="center">
-    <img src="https://smftricks.com/logos/logo.png">
- </p>
+![SMF Tricks - Free & Premium Mods and Themes for SMF](https://smftricks.com/logos/logo.png)
 
-## Topic First Image Rotator
-<img src="https://img.shields.io/badge/License-MIT-a05a3f?style=flat-square"> <img src="https://img.shields.io/badge/SMF-2.1-3f73a0?style=flat-square">
-<img src="https://img.shields.io/badge/SMF-2.0-996ee1?style=flat-square">
+# Topic First Image Rotator
+![License](https://img.shields.io/badge/License-MIT-248049) ![Hooks Only](https://img.shields.io/badge/Hooks%20Only-Yes-6041a3) ![SMF 2.1](https://img.shields.io/badge/SMF-2.1-3f73a0) ![SMF 2.0](https://img.shields.io/badge/SMF-2.0-a03f9b)
 
-* Developed by [Diego Andrés](https://github.com/DiegoAndresCortes)
+Developed by [Diego Andrés](https://github.com/DiegoAndresCortes)
 
 ## Introduction
-* Topic First Image Rotator allows you to add a slider (carousel) to your forum with the latest first image of each topic from the selected boards.
+Topic First Image Rotator allows you to add a slider (carousel) to your forum with the latest first image of each topic from the selected boards.
 
-## Features
+### Features
 - Enable on forum index (default is topic list only)
 - Include inserted attachments in posts (SMF 2.1.x)
 - Select the boards included
@@ -25,14 +22,13 @@
 - Autoplay
   - Speed
 
-## Requirements
-* Topic First Image Rotator can be installed on either SMF 2.0.x or SMF 2.1 with the same package.
-
-## How to install
-* You can install Topic First Image Rotator through the package manager of your forum administration.
-
-## Changelog
-You can find the changelog for Topic First Image Rotator on SMF Tricks: [Changelog](https://smftricks.com/index.php?topic=2206.0)
-
-## Carousel
-* Using [slick](https://github.com/kenwheeler/slick), licensed under MIT.
+### Localization
+- ![English](https://www.simplemachines.org/site_images/lang/english.gif) English
+- ![Spanish](https://www.simplemachines.org/site_images/lang/spanish_es.gif) Spanish
+- ![Russian](https://www.simplemachines.org/site_images/lang/russian.gif) Russian by [Bugo](https://www.simplemachines.org/community/index.php?action=profile;u=229017)
+---
+### [Changelog](https://github.com/SMFTricks/Topic-First-Image-Rotator/blob/main/CHANGELOG.md)
+### [GitHub](https://github.com/SMFTricks/Topic-First-Image-Rotator)
+---
+### Credits
+* [Slick Carousel](https://github.com/kenwheeler/slick), licensed under MIT.
