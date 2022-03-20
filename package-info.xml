@@ -17,7 +17,7 @@
 		<!-- Hooks -->
 		<code>hooks/2.0_add.php</code>
 		<!-- Redirect -->
-		<redirect url="?action=admin;area=modsettings;sa=firsttopicimage">redirect.txt</redirect>
+		<redirect url="?action=admin;area=modsettings;sa=firsttopicimage" />
 	</install>
 	<!-- SMF 2.1.x -->
 	<install for="2.1 - 2.1.99">
