@@ -1,5 +1,8 @@
 # Changelog
 
+#### 1.3.1 - 25 October 2022
+- ![Improvement](https://smftricks.com/assets/changelog/tag--pencil.png) Always load the images horizontally.
+
 #### 1.3 - 21 February 2022
 - ![Bug Fix](https://smftricks.com/assets/changelog/bug--minus.png) Fixed cache bug displaying wrong images.
 - ![Bug Fix](https://smftricks.com/assets/changelog/bug--minus.png) Fixed trying to display empty images.

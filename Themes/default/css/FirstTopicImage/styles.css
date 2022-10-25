@@ -90,6 +90,9 @@
 {
 	margin: 5px 35px 20px;
 }
+.firstopicimage-slick {
+	display: flex;
+}
 .firstopicimage-slick div.resize_image > a > img
 {
 	width: 150px;
