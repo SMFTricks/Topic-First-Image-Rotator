@@ -49,6 +49,8 @@ class FirstTopicImage
 	public static $_attach_extensions = [
 		'png',
 		'jpg',
+		'jpeg',
+		'gif',
 	];
 
 	/**

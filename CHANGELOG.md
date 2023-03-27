@@ -1,5 +1,8 @@
 # Changelog
 
+#### 1.3.2 - 26 March 2023
+- ![Improvement](https://smftricks.com/assets/changelog/tag--pencil.png) Added .gif and .jpeg extensions for attachments.
+
 #### 1.3.1 - 25 October 2022
 - ![Improvement](https://smftricks.com/assets/changelog/tag--pencil.png) Always load the images horizontally.
 
