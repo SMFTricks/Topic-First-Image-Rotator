@@ -2,7 +2,7 @@
 
 #### 1.3.3 - 22 December 2023
 - ![Bug Fix](https://smftricks.com/assets/changelog/bug--minus.png) Fixed marlformed slide when not enough images for the slide preset.
-- ![Bug Fix](https://smftricks.com/assets/changelog/bug--minus.png) Fixed issues for SMFm 2.0.x
+- ![Bug Fix](https://smftricks.com/assets/changelog/bug--minus.png) Fixed issues for SMF 2.0.x
 
 #### 1.3.2 - 26 March 2023
 - ![Improvement](https://smftricks.com/assets/changelog/tag--pencil.png) Added .gif and .jpeg extensions for attachments.
