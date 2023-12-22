@@ -126,3 +126,10 @@ div.resize_image > a > img {
 	display: flex;
 	align-items: center;
 }
+
+@media screen and (max-width: 768px) {
+	.firstopicimage-slick div.resize_image > a > img {
+		max-width: 100px;
+		max-height: 150px;
+	}
+}

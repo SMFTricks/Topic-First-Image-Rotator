@@ -176,51 +176,14 @@ class FirstTopicImage
 					transform: rotate(90deg);
 				}
 			</style>';
-			// Load the JS
-			$context['html_headers'] .= '
-			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-			<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-			<script>
-				$(document).ready(function(){
-					$(\'.firstopicimage-slick\').slick({
-						dots: false,
-						infinite: true,
-						centerMode: ' . (empty($modSettings['firstopicimage_centermode']) ? 'false' : 'true') . ',
-						autoplay: ' . (empty($modSettings['firstopicimage_slides_autoplay']) ? 'false' : 'true') . ',
-						autoplaySpeed: ' . (empty($modSettings['firstopicimage_slides_speed']) ? '1500' : $modSettings['firstopicimage_slides_speed']) . ',
-						slidesToShow: ' . (empty($modSettings['firstopicimage_slides_toshow']) ? '5' : $modSettings['firstopicimage_slides_toshow']) . ',
-						slidesToScroll: ' . (empty($modSettings['firstopicimage_slides_toscroll']) ? '1' : $modSettings['firstopicimage_slides_toscroll']) . ',
 
-						responsive: [
-						{
-							breakpoint: 1150,
-							settings: {
-								slidesToShow: 4,
-							}
-						},
-						{
-							breakpoint: 900,
-							settings: {
-								slidesToShow: 3,
-							}
-						},
-						{
-							breakpoint: 600,
-							settings: {
-								slidesToShow: 2,
-							}
-						},
-						{
-							breakpoint: 400,
-							settings: {
-								slidesToShow: 1,
-							}
-						}]
-					});
-				});
-			</script>';
+		// Load the JS
+		$context['html_headers'] .= '
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>';
+			
 
-			if ((self::$_images = cache_get_data('first_topic_image_u' . $user_info['id'] . (!empty($board) ? '_b' . $board : ''), 3600)) === null)
+		if ((self::$_images = cache_get_data('first_topic_image_u' . $user_info['id'] . (!empty($board) ? '_b' . $board : ''), 3600)) === null)
 		{
 			$request =  $smcFunc['db_query']('', '
 				SELECT t.id_topic, t.id_board, t.id_first_msg, t.id_member_started, t.approved,
@@ -279,6 +242,42 @@ class FirstTopicImage
 			}
 
 			$smcFunc['db_free_result']($request);
+
+			// Fire up the slides
+			$context['html_headers'] .= '
+			<script>
+				$(document).ready(function(){
+					$(\'.firstopicimage-slick\').slick({
+						dots: false,
+						infinite: true,
+						centerMode: ' . (empty($modSettings['firstopicimage_centermode']) ? 'false' : 'true') . ',
+						autoplay: ' . (empty($modSettings['firstopicimage_slides_autoplay']) ? 'false' : 'true') . ',
+						autoplaySpeed: ' . (empty($modSettings['firstopicimage_slides_speed']) ? '1500' : $modSettings['firstopicimage_slides_speed']) . ',
+						slidesToShow: ' . (!empty($modSettings['firstopicimage_slides_toshow']) ? ($modSettings['firstopicimage_slides_toshow'] > count(self::$_images) ? count(self::$_images) - 1 : $modSettings['firstopicimage_slides_toshow']) : '5') . ',
+						slidesToScroll: ' . (empty($modSettings['firstopicimage_slides_toscroll']) ? '1' : $modSettings['firstopicimage_slides_toscroll']) . ',
+
+						responsive: [
+						{
+							breakpoint: 1200,
+							settings: {
+								slidesToShow: ' . (count(self::$_images) <= 5 ? count(self::$_images) - 1 : '5') . ',
+							}
+						},
+						{
+							breakpoint: 991,
+							settings: {
+								slidesToShow: ' . (count(self::$_images) <= 3 ? count(self::$_images) - 1 : '3') . ',
+							}
+						},
+						{
+							breakpoint: 580,
+							settings: {
+								slidesToShow: 1,
+							}
+						}]
+					});
+				});
+			</script>';
 
 			cache_put_data('first_topic_image_u' . $user_info['id'] . (!empty($board) ? '_b' . $board : ''), self::$_images, 3600);
 		}
