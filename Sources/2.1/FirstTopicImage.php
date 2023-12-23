@@ -274,7 +274,7 @@ class FirstTopicImage
 				dots: false,
 				infinite: true,
 				centerMode: ' . (empty($modSettings['firstopicimage_centermode']) ? 'false' : 'true') . ',
-				autoplay: ' . (empty($modSettings['firstopicimage_slides_autoplay']) ? 'false' : 'false') . ',
+				autoplay: ' . (empty($modSettings['firstopicimage_slides_autoplay']) ? 'false' : 'true') . ',
 				autoplaySpeed: ' . (empty($modSettings['firstopicimage_slides_speed']) ? '1500' : $modSettings['firstopicimage_slides_speed']) . ',
 				slidesToShow: ' . (!empty($modSettings['firstopicimage_slides_toshow']) ? ($modSettings['firstopicimage_slides_toshow'] > count(self::$_images) ? count(self::$_images) - 1 : $modSettings['firstopicimage_slides_toshow']) : '5') . ',
 				slidesToScroll: ' . (empty($modSettings['firstopicimage_slides_toscroll']) ? '1' : $modSettings['firstopicimage_slides_toscroll']) . ',

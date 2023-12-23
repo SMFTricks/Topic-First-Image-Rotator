@@ -1,5 +1,8 @@
 # Changelog
 
+#### 1.3.4 - 23 December 2023
+- ![Bug Fix](https://smftricks.com/assets/changelog/bug--minus.png) Fixed broken autoplay for SMF 2.1.x
+
 #### 1.3.3 - 22 December 2023
 - ![Bug Fix](https://smftricks.com/assets/changelog/bug--minus.png) Fixed marlformed slide when not enough images for the slide preset.
 - ![Bug Fix](https://smftricks.com/assets/changelog/bug--minus.png) Fixed issues for SMF 2.0.x
