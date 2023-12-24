@@ -276,20 +276,20 @@ class FirstTopicImage
 				centerMode: ' . (empty($modSettings['firstopicimage_centermode']) ? 'false' : 'true') . ',
 				autoplay: ' . (empty($modSettings['firstopicimage_slides_autoplay']) ? 'false' : 'true') . ',
 				autoplaySpeed: ' . (empty($modSettings['firstopicimage_slides_speed']) ? '1500' : $modSettings['firstopicimage_slides_speed']) . ',
-				slidesToShow: ' . (!empty($modSettings['firstopicimage_slides_toshow']) ? ($modSettings['firstopicimage_slides_toshow'] > count(self::$_images) ? count(self::$_images) - 1 : $modSettings['firstopicimage_slides_toshow']) : '5') . ',
+				slidesToShow: ' . (!empty($modSettings['firstopicimage_slides_toshow']) ? (!empty(self::$_images) && $modSettings['firstopicimage_slides_toshow'] > count(self::$_images) ? count(self::$_images) - 1 : $modSettings['firstopicimage_slides_toshow']) : '5') . ',
 				slidesToScroll: ' . (empty($modSettings['firstopicimage_slides_toscroll']) ? '1' : $modSettings['firstopicimage_slides_toscroll']) . ',
 
 				responsive: [
 				{
 					breakpoint: 1200,
 					settings: {
-						slidesToShow: ' . (count(self::$_images) <= 5 ? count(self::$_images) - 1 : '5') . ',
+						slidesToShow: ' . (!empty(self::$_images) && count(self::$_images) <= 5 ? count(self::$_images) - 1 : '5') . ',
 					}
 				},
 				{
 					breakpoint: 991,
 					settings: {
-						slidesToShow: ' . (count(self::$_images) <= 3 ? count(self::$_images) - 1 : '3') . ',
+						slidesToShow: ' . (!empty(self::$_images) && count(self::$_images) <= 3 ? count(self::$_images) - 1 : '3') . ',
 					}
 				},
 				{

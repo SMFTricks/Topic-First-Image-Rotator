@@ -1,5 +1,8 @@
 # Changelog
 
+#### 1.3.5 - 24 December 2023
+- ![Bug Fix](https://smftricks.com/assets/changelog/bug--minus.png) Fixed issues in boards with no images.
+
 #### 1.3.4 - 23 December 2023
 - ![Bug Fix](https://smftricks.com/assets/changelog/bug--minus.png) Fixed broken autoplay for SMF 2.1.x
 
